@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: news-frontend
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8500/realms/news-aggregator/protocol/openid-connect/certs
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8500/realms/news-aggregator
+        registration:
+          gateway-client:
+            provider: keycloak
+            client-id: news-aggregator
+            client-secret: j2PWdyrO54XVpKsIs8mGu2rjHlMKn77M
+            authorization-grant-type: authorization_code
+            scope: openid
+
+server:
+  port: 8091
+management:
+  endpoints.web.exposure.include: 'prometheus, metrics, info, health, env, refresh, beans, mappings'
+  endpoint:
+    health:
+      show-details: ALWAYS
+    metrics:
+      access: read_only
+    prometheus:
+      access: read_only
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  tracing:
+    sampling:
+      probability: 1

@@ -1,0 +1,10 @@
+spring:
+  activemq:
+    broker-url: tcp://localhost:61616
+    user: admin
+    password: admin
+  mongodb:
+    uri: mongodb://localhost:27017/news-aggregator
+
+server:
+  port: 8090

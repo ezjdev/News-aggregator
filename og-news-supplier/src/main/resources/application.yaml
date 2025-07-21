@@ -1,0 +1,11 @@
+app:
+  og:
+    url: https://ok.surf/
+spring:
+  activemq:
+    broker-url: tcp://localhost:61616
+    user: admin
+    password: admin
+
+server:
+  port: 8093

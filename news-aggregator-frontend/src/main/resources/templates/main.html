@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>News Aggregator</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>
+</head>
+<div id="snippetContent">
+    <div class="container">
+        <header class="navbar page-header darkHeader border0 navbar-expand-lg">
+            <div class="container"><a class="navbar-brand d-inline-flex align-items-center" href="/">
+                <img class="news-aggregator-logo" th:src="@{/img/logo.png}" alt="Logo">
+                <div class="header display-2">News aggregator</div>
+            </a>
+            </div>
+        </header>
+        <div class="text-right">
+            <span>BTC/USDT :</span>
+            <span id="btcusdt">Loading...</span>
+        </div>
+        <div class="news-aggregator-app mb-4">
+            <main class="inbox">
+                <ul class="news-list" th:each="news : ${newsList}">
+                    <li class="news">
+                        <a th:href="${news.link}">
+                            <div class="header">
+                                <span class="from" th:text="${news.magazine}"/>
+                                <span class="from">:</span>
+                                <span class="from" th:text="${news.source}"/>
+                                <img class="news-magazine-img-wrapper news-magazine-wrapper"
+                                     th:src="@{${news.imageUrl}}"
+                                     alt="Source image">
+                                <span class="date">
+                                <span class="fa fa-paper-clip" th:text="${news.publishDate}"/>
+                            </span>
+                            </div>
+                            <div class="title" th:text="${news.title}"/>
+                        </a>
+                    </li>
+                </ul>
+            </main>
+        </div>
+
+        <!-- Pagination -->
+        <nav>
+            <ul class="pagination mb-0 justify-content-center">
+                <!-- Previous Button -->
+                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/(page=${currentPage - 1})}" th:if="${currentPage > 1}">Previous</a>
+                    <span class="page-link" th:if="${currentPage == 1}">Previous</span>
+                </li>
+
+                <!-- Page Numbers -->
+                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+                    th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{/(page=${i})}" th:text="${i}"></a>
+                </li>
+
+                <!-- Next Button -->
+                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                    <a class="page-link" th:href="@{/(page=${currentPage + 1})}" th:if="${currentPage < totalPages}">Next</a>
+                    <span class="page-link" th:if="${currentPage == totalPages}">Next</span>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <!-- Include WebSocket JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <script type="text/javascript">
+        const socket = new SockJS('http://localhost:8092/ws-btcusdt');
+        const stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, (frame) => {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/btcusdt', (message) => {
+                document.getElementById('btcusdt').textContent = message.body;
+            });
+        });
+    </script>
+</div>
