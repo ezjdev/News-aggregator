@@ -17,5 +17,5 @@ public interface NewsAggregatorApi {
     );
 
     @GetMapping("/{id}")
-     ResponseEntity<NewsDto> getById(@PathVariable String id);
+    ResponseEntity<NewsDto> getById(@PathVariable String id);
 }

@@ -13,10 +13,6 @@ public class NewsIdGenerator {
         return generateMD5(newsDto.getLink());
     }
 
-    public String generateNewsId(String link) {
-        return generateMD5(link);
-    }
-
     /**
      * Generates an MD5 hash for the given link string.
      *
