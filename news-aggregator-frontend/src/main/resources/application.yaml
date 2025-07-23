@@ -17,6 +17,12 @@ spring:
             client-secret: j2PWdyrO54XVpKsIs8mGu2rjHlMKn77M
             authorization-grant-type: authorization_code
             scope: openid
+news:
+  api:
+    url: localhost:8090/api/v1/news
+app:
+  total-pages: 5
+  page-size: 10
 
 server:
   port: 8091

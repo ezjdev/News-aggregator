@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: news-frontend
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://mock-issuer # Not real — avoid resolution
+news:
+  api:
+    url: localhost:8090/api/v1/news
+app:
+  total-pages: 5
+  page-size: 10
