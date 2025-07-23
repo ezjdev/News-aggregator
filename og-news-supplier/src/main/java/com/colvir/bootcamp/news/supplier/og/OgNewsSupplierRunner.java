@@ -6,10 +6,10 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableFeignClients
-public class OgNewsSupplier {
+public class OgNewsSupplierRunner {
 
     public static void main(String[] args) {
-        SpringApplication.run(OgNewsSupplier.class, args);
+        SpringApplication.run(OgNewsSupplierRunner.class, args);
     }
 
 }

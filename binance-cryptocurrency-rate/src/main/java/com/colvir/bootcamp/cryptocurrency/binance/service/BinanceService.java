@@ -1,10 +1,11 @@
-package com.colvir.bootcamp.cryptocurrency.binance.seviece;
+package com.colvir.bootcamp.cryptocurrency.binance.service;
 
 import com.colvir.bootcamp.cryptocurrency.binance.dto.CryptoRateDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,11 @@ public class BinanceService {
 
     private final AtomicBoolean connected = new AtomicBoolean(false);
     private final AtomicLong btcToUsdtBits = new AtomicLong(-1L);
-    private static final String BINANCE_WS_URL = "wss://stream.binance.com:9443/ws/btcusdt@trade";
+
+    @Value("${app.frontend.path}")
+    public String frontendPath;
+    @Value("${app.binance.websocket.url}")
+    private String binanceWsUrl;
 
     private final ObjectMapper objectMapper;
     private final ReactorNettyWebSocketClient client;
@@ -37,7 +42,7 @@ public class BinanceService {
         connect();
     }
 
-    @Scheduled(fixedDelay = 10_000)
+    @Scheduled(fixedDelayString = "${app.binance.websocket.reconnection.delay}")
     public void reconnectIfNeeded() {
         if (!connected.get()) {
             log.atInfo().log("[WebSocket] Disconnected. Attempting to reconnect...");
@@ -45,13 +50,13 @@ public class BinanceService {
         }
     }
 
-    @Scheduled(fixedRate = 5_000)
+    @Scheduled(fixedRateString = "${app.frontend.rate}")
     public void sendPriceUpdate() {
-        messagingTemplate.convertAndSend("/topic/btcusdt", String.valueOf(longBitsToDouble(btcToUsdtBits.get())));
+        messagingTemplate.convertAndSend(frontendPath, String.valueOf(longBitsToDouble(btcToUsdtBits.get())));
     }
 
     private void connect() {
-        client.execute(URI.create(BINANCE_WS_URL), session -> {
+        client.execute(URI.create(binanceWsUrl), session -> {
             connected.set(true);
             log.atInfo().log("[WebSocket] Connected to Binance.");
             return session.receive()

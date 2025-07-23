@@ -24,7 +24,7 @@ import static com.colvir.bootcamp.news.common.constant.NewsConst.NEWS_QUEUE_NAME
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class OgNewSupplierService {
+public class OgNewSupplierScheduler {
 
     private final JmsTemplate jmsTemplate;
     private final ObjectMapper objectMapper;
@@ -38,7 +38,7 @@ public class OgNewSupplierService {
         getNews();
     }
 
-    @Scheduled(fixedRate = 60_000)
+    @Scheduled(fixedRateString = "${news.api.rate}")
     public void scheduled() {
         getNews();
     }
